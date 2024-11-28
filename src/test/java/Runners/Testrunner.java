@@ -11,7 +11,6 @@ import io.cucumber.testng.CucumberOptions;
         plugin = {"pretty","html:Hooks/misreport.html"}
 
 )
-public class testngrunner extends AbstractTestNGCucumberTests
-{
+public class Testrunner extends AbstractTestNGCucumberTests{
 
 }
