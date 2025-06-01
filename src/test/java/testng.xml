@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="webdrivercucumberproject">
-    <test name="login.feature">
-        <classes>
-            <class name="Runners.TestRunner"/>
+<!--to control the thread count for parallel execution we use data-provider-thread-count = 2 and run the test
+cases in parallel , Here we need to run the testcases from testng.xml instead of test runner class -->
+<suite name="webdrivercucumberproject"  data-provider-thread-count="2" >
 
+    <test name="login">
+        <classes>
+            <class name="Runners.Testrunner"/>
+            <class name="Runners.Testrunnerrerun"></class>
         </classes>
     </test> <!-- Test -->
 </suite> <!-- Suite -->

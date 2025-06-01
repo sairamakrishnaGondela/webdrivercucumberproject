@@ -1,13 +1,10 @@
 package Hooks;
 
+import Utility.DriverFactoryold;
 import Utility.DriverFactory;
 import Utility.configreader;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Properties;
@@ -15,43 +12,53 @@ import java.util.Properties;
 public class ApplicationHooks
 {
 
-    private WebDriver driver;
+    public WebDriver driver;
     private configreader configvaluereader;
-    Properties prop;
-    private DriverFactory driverFactory;
+    private Properties prop;
 
     @Before(order = 0)
-    public void initilizeproperties()
-    {
-        configvaluereader= new configreader();
-        prop= configvaluereader.init_prop();
+    public void initializeProperties() {
+        configvaluereader = new configreader();
+        prop = configvaluereader.init_prop();
+        System.out.println("Initialized properties.");
+        System.out.println("Using Healenium Proxy URL: http://localhost:8085/wd/hub");
     }
 
     @Before(order = 1)
-    public void initilizebroswer()
+    public void initializeBrowser()
     {
-        String browsername = prop.getProperty("browser");
-        driverFactory = new DriverFactory();
-        driver= driverFactory.init_driver(browsername);
+        String browserName = System.getProperty("browser","chrome");
+        System.out.println("Browser selected: " + browserName);
+
+        // Initialize the driver using the DriverFactory
+        driver = DriverFactory.init_driver(browserName);
     }
 
-    @After(order =0)
-    public  void quitbrowser()
-    {
-       driver.quit();
+    @After(order = 0)
+    public void quitBrowser() {
+        DriverFactory.quitDriver();
+        System.out.println("Browser closed.");
     }
-    // for after annotations the sequence will be executed in reverse way means first order =1 will be executed
-    //and later order =0 is executed
-    @After(order =1)
-    public  void takescreenshot(Scenario scenario)
+
+    //@After(order = 1)
+    /*public void takeScreenshot(Scenario scenario)
     {
-        if(scenario.isFailed())
-        {
-            String screenshotname = scenario.getName().replaceAll(" ","_");
-            byte[] sourcepath = ((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES);
-            scenario.attach(sourcepath,"image/png",screenshotname);
+        WebDriver augmentedDriver = new Augmenter().augment(driver);
+        if (augmentedDriver != null) {
+            TakesScreenshot ts = (TakesScreenshot) augmentedDriver;
+            File src = ts.getScreenshotAs(OutputType.FILE);
+            // ...save
+        } else {
+            System.out.println("Driver is null. Skipping screenshot.");
         }
 
-    }
-
+        if (scenario.isFailed()) {
+            byte[] screenshot = ((TakesScreenshot) augmentedDriver).getScreenshotAs(OutputType.BYTES);
+            String screenshotName = scenario.getName().replaceAll(" ", "_");
+            scenario.attach(screenshot, "image/png", screenshotName);
+            System.out.println("Screenshot captured for failed scenario.");
+        }
+    }*/
 }
+
+

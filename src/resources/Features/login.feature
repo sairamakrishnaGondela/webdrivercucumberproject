@@ -20,11 +20,21 @@ Feature: login to salesforce page
        #  | krishna61295@gmail.com | Krishna@61295 |
        #  | krishna61295@gmail.com | Krishna@61295 |
 
-    Scenario: logging to salesforce with wrong user name and password
-    Given I am on login page
-    When  I enter "krishna61295@gmail.com" or "Krishna1295" and click on login button
-    Then  I will be seeing error message
 
+
+       Scenario: logging to salesforce with correct wrong user name and correct password
+              Given I am on login page
+              When  I enter "krishna61295@gmail.com" or "Krishna@61295" and click on login button
+              Then  I will be navigating to Home page and validate title "Lightning Experience"
+
+       @smoke
+       Scenario: logging to salesforce with correct  user name and correct password with datatable
+              Given I am on login page
+              When  I enter  and click on login button
+                     | username | krishna61295@gmail.com |
+                     | password | Krishna@61295          |
+
+                     Then  I will be navigating to Home page and validate title "Lightning Experience"
 #//input[contains(@placeholder,'Search apps and items...')]
   #//button[@title='App Launcher']
   #//a[@title='New']

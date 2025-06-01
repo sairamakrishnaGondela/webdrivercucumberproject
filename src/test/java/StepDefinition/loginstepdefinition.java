@@ -1,25 +1,31 @@
 package StepDefinition;
 
 import Pages.loginPage;
+import Utility.DriverFactoryold;
 import Utility.DriverFactory;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import Hooks.ApplicationHooks;
 
-import static Utility.DriverFactory.*;
-import static Pages.loginPage.*;
-
+import java.util.Map;
 
 
-
-public class loginstepdefinition
+public class loginstepdefinition extends DriverFactory
 {
 
+        private WebDriver driver;
+        private loginPage loginPage;
+        private ApplicationHooks hooks;
+        public loginstepdefinition()
+        {
+                //this.driver = DriverFactory.getDriver();
+                this.loginPage = new loginPage(DriverFactory.getDriver());
 
-
-        loginPage pg = new loginPage(DriverFactory.getDriver());
+        }
+  //DriverFactory.getDriver().findElement(By.id("username")).sendKeys("testuser")
         @Given("I am on login page")
         public void I_am_on_login_page()
         {
@@ -39,7 +45,7 @@ public class loginstepdefinition
         @When("^I enter user name and password and click on login button$")
         public void enterusernameandpassword()
         {
-               // pg.fillusernameandpassword();
+                // pg.fillusernameandpassword();
 
 
         }
@@ -51,18 +57,33 @@ public class loginstepdefinition
 
 
         @When("I enter {string} or {string} and click on login button")
-        public void I_enter_or_and_click_on_login_button(String uname, String pwd)
-        {
-                  pg.enterusername(uname);
-                  pg.enterpassowrd(pwd);
-                  pg.clicksubmit();
+        public void I_enter_or_and_click_on_login_button(String uname, String pwd) throws InterruptedException {
+                loginPage.enterUsername(uname);
+                loginPage.enterPassword(pwd);
+                loginPage.clickSubmit();
+                Thread.sleep(20000);
 
         }
+
+        @When("I enter  and click on login button")
+        public void i_enter_and_click_on_login_buttons(io.cucumber.datatable.DataTable credTable) {
+
+
+                Map<String, String> credList = credTable.asMap();
+                String userName = credList.get("username");
+                String password = credList.get("password");
+                loginPage.enterUsername(userName);
+                loginPage.enterPassword(password);
+                loginPage.clickSubmit();
+                //throw new io.cucumber.java.PendingException();
+        }
+
+
 
         @Then("I will be seeing error message")
         public void i_will_be_seeing_error_message()
         {
-                Assert.assertTrue(pg.validateerrormessage());
+                Assert.assertTrue(loginPage.validateErrorMessage());
                 System.out.println("I am  seeing error message for wrong user name and password");
         }
 
@@ -83,9 +104,9 @@ public class loginstepdefinition
         }
 
         @Then("I will be navigating to Home page and validate title {string}")
-        public void I_will_be_navigating_to_Home_page_and_validate_title(String arg0)
+        public void I_will_be_navigating_to_Home_page_and_validate_title(String actualvalue)
         {
-                Assert.assertEquals(pg.returntitle(),arg0);
+                Assert.assertEquals(loginPage.returnTitle(),actualvalue);
         }
 
 
