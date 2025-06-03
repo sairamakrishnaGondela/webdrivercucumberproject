@@ -7,7 +7,7 @@ cases in parallel , Here we need to run the testcases from testng.xml instead of
     <test name="login">
         <classes>
             <class name="Runners.Testrunner"/>
-            <class name="Runners.Testrunnerrerun"></class>
+            <!--<class name="Runners.Testrunnerrerun"></class>-->
         </classes>
     </test> <!-- Test -->
 </suite> <!-- Suite -->

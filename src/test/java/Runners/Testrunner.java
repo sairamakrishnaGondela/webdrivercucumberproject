@@ -11,8 +11,13 @@ import org.testng.annotations.DataProvider;
         glue = {"StepDefinition","Hooks"},
        //monochrome = false,
         // dryRun = true,
-        plugin = {"pretty","html:Hooks/misreport.html","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
-                "rerun:target/failed_scenarios.txt"},
+        plugin = {"pretty",
+                "pretty",
+                "json:target/cucumber.json",
+                "html:target/cucumber-reports/cucumber-html-report.html",
+                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"},
+//        plugin = {"pretty","html:Hooks/misreport.html","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+//                "rerun:target/failed_scenarios.txt"},
         tags = "@smoke"
 
 

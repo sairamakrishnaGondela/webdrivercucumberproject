@@ -21,7 +21,7 @@ Feature: login to salesforce page
        #  | krishna61295@gmail.com | Krishna@61295 |
 
 
-
+       @smoke
        Scenario: logging to salesforce with correct wrong user name and correct password
               Given I am on login page
               When  I enter "krishna61295@gmail.com" or "Krishna@61295" and click on login button

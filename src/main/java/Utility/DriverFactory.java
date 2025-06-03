@@ -1,66 +1,87 @@
 package Utility;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.safari.SafariDriver;
 
 public class DriverFactory {
 
-    private static final ThreadLocal<RemoteWebDriver> driver = new ThreadLocal<>();
+    // ThreadLocal for thread-safe WebDriver instances
+    private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
-    // Set Docker container URLs
-    private static final String CHROME_URL = "http://localhost:4444/wd/hub";
-    private static final String FIREFOX_URL = "http://localhost:4445/wd/hub";
-    private static final String EDGE_URL = "http://localhost:4446/wd/hub";
-
+    // Initialize driver based on browser name
     public static WebDriver init_driver(String browser) {
-        System.out.println("Initializing remote browser: " + browser);
+        System.out.println("Initializing browser: " + browser);
 
-        try {
-            switch (browser.toLowerCase()) {
-                case "chrome":
-                    ChromeOptions chromeOptions = new ChromeOptions();
-                    chromeOptions.addArguments("--disable-dev-shm-usage", "--no-sandbox", "--disable-gpu");
-                    driver.set(new RemoteWebDriver(new URL(CHROME_URL), chromeOptions));
-                    break;
+        WebDriver localDriver;
 
-                case "firefox":
-                    FirefoxOptions firefoxOptions = new FirefoxOptions();
-                    driver.set(new RemoteWebDriver(new URL(FIREFOX_URL), firefoxOptions));
-                    break;
+        switch (browser.toLowerCase()) {
+            case "chrome":
+                WebDriverManager.chromedriver().setup();
+                ChromeOptions options= new ChromeOptions();
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-extensions");
+                options.addArguments("--disable-gpu");
+                options.addArguments("--remote-allow-origins=*");
 
-                case "edge":
-                    EdgeOptions edgeOptions = new EdgeOptions();
-                    driver.set(new RemoteWebDriver(new URL(EDGE_URL), edgeOptions));
-                    break;
+                // Optional: Avoid CDP use where possible
+                options.setExperimentalOption("useAutomationExtension", false);
+                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
 
-                default:
-                    throw new IllegalArgumentException("Unsupported browser: " + browser);
-            }
+                //WebDriver driver = new ChromeDriver(options);
 
-            // Maximize window and clear cookies
-            getDriver().manage().window().maximize();
-            getDriver().manage().deleteAllCookies();
+                // Optional chromeOptions
+                // chromeOptions.addArguments("--disable-dev-shm-usage");
+                // chromeOptions.addArguments("--no-sandbox");
+                localDriver = new ChromeDriver(options);
+                break;
 
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Invalid Remote WebDriver URL", e);
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                localDriver = new FirefoxDriver();
+                break;
+
+            case "edge":
+                WebDriverManager.edgedriver().setup();
+                localDriver = new EdgeDriver();
+                break;
+
+            case "safari":
+                // SafariDriver does not require WebDriverManager
+                localDriver = new SafariDriver();
+                break;
+
+            default:
+                System.out.println("Unsupported browser. Defaulting to Chrome.");
+                WebDriverManager.chromedriver().setup();
+                localDriver = new ChromeDriver();
+                break;
         }
+
+        driver.set(localDriver);
+
+        // Maximize and clean session
+        getDriver().manage().window().maximize();
+        // getDriver().manage().deleteAllCookies(); // Optional
 
         return getDriver();
     }
 
-    public static WebDriver getDriver() {
+    // Get WebDriver instance for current thread
+    public static synchronized WebDriver getDriver() {
         return driver.get();
     }
 
+    // Quit and clean up WebDriver instance
     public static void quitDriver() {
-        if (driver.get() != null) {
-            driver.get().quit();
+        WebDriver currentDriver = driver.get();
+        if (currentDriver != null) {
+            currentDriver.quit();
             driver.remove();
         }
     }
