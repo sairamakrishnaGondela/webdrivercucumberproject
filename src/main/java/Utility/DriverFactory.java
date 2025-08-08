@@ -16,6 +16,7 @@ public class DriverFactory {
     // Initialize driver based on browser name
     public static WebDriver init_driver(String browser) {
         System.out.println("Initializing browser: " + browser);
+        String isHeadless = System.getProperty("headless");
 
         WebDriver localDriver;
 
@@ -23,6 +24,9 @@ public class DriverFactory {
             case "chrome":
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions options= new ChromeOptions();
+                if (isHeadless.equalsIgnoreCase("true")) {
+                    options.addArguments("--headless");
+                }
                 options.addArguments("--no-sandbox");
                 options.addArguments("--disable-dev-shm-usage");
                 options.addArguments("--disable-extensions");

@@ -3,6 +3,7 @@ package StepDefinition;
 import Pages.loginPage;
 import Utility.DriverFactory;
 import Utility.DriverFactory;
+import Utility.ExtentReportManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 public class loginstepdefinition extends DriverFactory
 {
+
 
         private WebDriver driver;
         private loginPage loginPage;
@@ -32,7 +34,7 @@ public class loginstepdefinition extends DriverFactory
                 try {
                         DriverFactory.getDriver().get("https://login.salesforce.com/");
                         System.out.println("I am ready to go to ");
-
+                    ExtentReportManager.logPass("It is navigated to login page");
 
                 }
                 catch(Exception e)

@@ -1,0 +1,16 @@
+Scenario	Working Command
+Basic run	mvn clean test
+Run testng.xml (if in pom.xml)	mvn clean test
+With custom tag	mvn clean test -Dtag="@smoke" (if handled in code)
+With browser/env	mvn clean test -Dbrowser=chrome -Denv=qa (if handled in code)
+
+Run full suite	mvn clean test
+Run with tag	mvn clean test -Dcucumber.filter.tags="@smoke"
+Run specific feature	mvn clean test -Dcucumber.features=src/test/resources/Login.feature
+With browser/env	mvn clean test -Dbrowser=chrome -Denv=qa
+With profile	mvn clean test -Pqa
+With testng.xml	mvn clean test -DsuiteXmlFile=testng.xml
+
+
+
+

@@ -30,6 +30,11 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+test-output/
+screenshot/
+src/test/failed/
+
+
 
 ### VS Code ###
 .vscode/
